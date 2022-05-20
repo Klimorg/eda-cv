@@ -30,9 +30,7 @@ theme:
 plugins:
   - search:
       lang: fr
-  - mknotebooks
-  # - neoteroi.mkdocsoad:
-  #     use_pymdownx: true
+
 
 extra_css:
   - stylesheets/extra.css
