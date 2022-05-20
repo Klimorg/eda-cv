@@ -7,11 +7,11 @@ import numpy as np
 from PIL import Image
 
 
-def read_imagefile(data) -> Image.Image:
+def read_imagefile(data: bytes) -> Image.Image:
     return Image.open(BytesIO(data))
 
 
-def load_image_into_numpy_array(data):
+def load_image_into_numpy_array(data: bytes) -> np.ndarray:
     return np.array(Image.open(BytesIO(data)))
 
 
@@ -20,6 +20,13 @@ def compute_histograms_channels(
     filename: str,
     timestamp: str,
 ) -> None:
+    """_summary_
+
+    Args:
+        image (np.ndarray): _description_
+        filename (str): _description_
+        timestamp (str): _description_
+    """
     colors = ("red", "green", "blue")
     channel_ids = (0, 1, 2)
 
@@ -43,6 +50,12 @@ def compute_histograms_channels(
 
 
 def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
+    """_summary_
+
+    Args:
+        images_list (List[np.ndarray]): _description_
+        timestamp (str): _description_
+    """
     # Assuming all images are the same size, get dimensions of first image
     height, width, _ = images_list[0].shape
     num_images = len(images_list)

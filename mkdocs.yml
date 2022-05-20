@@ -1,4 +1,4 @@
-site_name: Arctic Vault
+site_name: EDA for Computer Vision
 site_author: Mathieu Klimczak
 theme:
   name: material
@@ -30,7 +30,6 @@ theme:
 plugins:
   - search:
       lang: fr
-
 
 extra_css:
   - stylesheets/extra.css
