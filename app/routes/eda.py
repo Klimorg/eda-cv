@@ -2,10 +2,13 @@ from io import BytesIO
 from pathlib import Path
 from typing import List
 
+import arrow
+import numpy as np
 from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import FileResponse, Response
+from PIL import Image
 
-from app.pydantic_models import FeatureReport
+from app.pydantic_models import Extension, FeatureReport
 from app.routes.dependancies import (
     compute_histograms_channels,
     compute_mean_image,
@@ -53,7 +56,9 @@ async def image_endpoint(file: UploadFile = File(...)):
     result = {"filename": file.filename}
 
     return Response(
-        content=bytes_image.getvalue(), headers=result, media_type="image/png"
+        content=bytes_image.getvalue(),
+        headers=result,
+        media_type="image/png",
     )
 
 
@@ -64,24 +69,54 @@ async def image_endpoint(file: UploadFile = File(...)):
     operation_id="compute_histograms_channels",
 )
 async def get_histograms_channels(file: UploadFile = File(...)):
+
+    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+
     filename = Path(file.filename).stem
     image = load_image_into_numpy_array(await file.read())
 
-    compute_histograms_channels(image=image, filename=filename)
+    compute_histograms_channels(image=image, filename=filename, timestamp=timestamp)
     result = {"filename": file.filename}
 
-    return FileResponse(f"histograms/{filename}.png", headers=result)
+    return FileResponse(f"histograms/{filename}_{timestamp}.png", headers=result)
 
 
 @router.post(
     "/mean_image",
     tags=["CV"],
     status_code=status.HTTP_200_OK,
+    deprecated=True,
 )
 async def get_mean_image(files: List[UploadFile] = File(...)):
 
+    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+
     images_list = [load_image_into_numpy_array(await file.read()) for file in files]
 
-    compute_mean_image(images_list=images_list)
+    compute_mean_image(images_list=images_list, timestamp=timestamp)
 
-    return FileResponse("mean_image/average.png")
+    return FileResponse(f"mean_image/average_{timestamp}.png")
+
+
+@router.get(
+    "/dataset_mean_image",
+    tags=["CV"],
+    status_code=status.HTTP_200_OK,
+)
+async def get_dataset_mean_image(extension: Extension):
+
+    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+
+    if extension == Extension.jpg:
+        images_paths = get_items_list(directory="/opt/data", extension=".jpg")
+    elif extension == Extension.png:
+        images_paths = get_items_list(directory="/opt/data", extension=".png")
+    else:
+        pass
+
+    images_list = [
+        np.array(Image.open(image), dtype=np.float32) for image in images_paths
+    ]
+    compute_mean_image(images_list=images_list, timestamp=timestamp)
+
+    return FileResponse(f"mean_image/average_{timestamp}.png")
