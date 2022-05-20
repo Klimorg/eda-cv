@@ -1,0 +1,8 @@
+data_detection*
+data_segmentation*
+Dockerfile*
+setup.*
+.vscode
+makefile
+requirements-*
+app/graphs/*
