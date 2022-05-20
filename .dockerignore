@@ -7,6 +7,8 @@ app/men_image/*
 .github*
 .pytest_cache*
 tests*
+docs*
+site*
 
 #files
 Dockerfile*

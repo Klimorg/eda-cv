@@ -15,7 +15,11 @@ def load_image_into_numpy_array(data):
     return np.array(Image.open(BytesIO(data)))
 
 
-def compute_histograms_channels(image: np.array, filename: str, timestamp: str) -> None:
+def compute_histograms_channels(
+    image: np.ndarray,
+    filename: str,
+    timestamp: str,
+) -> None:
     colors = ("red", "green", "blue")
     channel_ids = (0, 1, 2)
 
@@ -38,7 +42,7 @@ def compute_histograms_channels(image: np.array, filename: str, timestamp: str) 
     plt.savefig(f"histograms/{filename}_{timestamp}.png")
 
 
-def compute_mean_image(images_list: List[np.array], timestamp: str) -> None:
+def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
     # Assuming all images are the same size, get dimensions of first image
     height, width, _ = images_list[0].shape
     num_images = len(images_list)
