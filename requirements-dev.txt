@@ -19,4 +19,4 @@ pytest-xdist==2.5.0
 radon==5.1.0
 # refactoring
 rope==1.0.0
-wemake-python-styleguide==0.16.0
+wemake-python-styleguide==0.16.1
