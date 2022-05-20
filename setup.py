@@ -23,12 +23,12 @@ with open(Path(BASE_DIR, "requirements-doc.txt"), "r") as req_doc:
 
 
 setup(
-    name="Template AI",
-    version="1.1",
+    name="eda-cv",
+    version="1.0",
     license="",
     description="installation du projet",
     author="MKL",
-    author_email="mklimczak@citc-eurarfid.com",
+    author_email="klimczak.mathieu@pm.me",
     url="",
     # package_dir={"": "src"},
     # packages=setuptools.find_packages(where="src"),
