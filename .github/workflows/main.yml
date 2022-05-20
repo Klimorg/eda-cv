@@ -1,5 +1,5 @@
-# .github/workflows/testing.yml
-name: Pytest
+# .github/workflows/main.yml
+name: Test and Push
 on: [push, workflow_call]
 
 jobs:
