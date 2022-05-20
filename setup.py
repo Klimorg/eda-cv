@@ -10,7 +10,7 @@ from setuptools import setup
 BASE_DIR = Path(__file__).parent
 
 # Load packages from requirements.txt
-with open(Path(BASE_DIR, "/requirements.txt"), "r") as req:
+with open(Path(BASE_DIR, "requirements.txt"), "r") as req:
     required_packages = [ln.strip() for ln in req.readlines()]
 
 # Load packages from requirements-dev.txt
