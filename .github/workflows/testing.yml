@@ -3,7 +3,7 @@ name: Pytest
 on: [push, workflow_call]
 
 jobs:
-  build:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -42,6 +42,7 @@ jobs:
           python -m pytest -v
 
   docker:
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       -
