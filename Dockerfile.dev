@@ -1,8 +1,20 @@
 FROM python:3.9-slim
 
-RUN apt-get update -y
+RUN apt-get update && apt-get install make git -y
 
-WORKDIR /opt
+ARG USERNAME=vorph
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+
+RUN groupadd -g $USER_GID -o $USERNAME
+RUN useradd -m -u $USER_UID -g $USER_GID -o -s /bin/bash $USERNAME
+
+USER $USERNAME
+
+ENV PATH "$PATH:/home/$USERNAME/.local/bin"
+
+WORKDIR /home/$USERNAME
 
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
 # Prevents Python from writing .pyc files to disk
@@ -12,21 +24,14 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # without being first buffered and that you can see the output of your application (e.g. django logs)
 # in real time. Equivalent to python -u: https://docs.python.org/3/using/cmdline.html#cmdoption-u
 ENV PYTHONUNBUFFERED 1
-# ENV ENVIRONMENT prod
-# ENV TESTING 0
 
-
-COPY ./requirements.txt /opt/app/requirements.txt
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip install --no-cache-dir --upgrade -r /opt/app/requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r requirements-dev.txt
 
-COPY ./app /opt/app
-RUN mkdir -p /opt/data
-RUN mkdir -p /opt/mean_image
-RUN mkdir -p /opt/histograms
+# COPY ./requirements.txt .
+# COPY ./requirements-dev.txt .
+# COPY ./app .
 
 EXPOSE 8080
-
-# Start app
-ENTRYPOINT ["gunicorn", "-c", "app/gunicorn.py", "-k", "uvicorn.workers.UvicornWorker", "app.main:app"]

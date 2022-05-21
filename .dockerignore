@@ -1,14 +1,13 @@
 #directories
-data_detection*
-data_segmentation*
 app/graphs/*
 app/men_image/*
-.vscode
-.github*
-.pytest_cache*
 tests*
 docs*
 site*
+.vscode
+.github*
+.pytest_cache*
+.devcontainer*
 
 #files
 Dockerfile*
