@@ -8,6 +8,9 @@ site*
 .github*
 .pytest_cache*
 .devcontainer*
+data*
+histograms*
+mean_image*
 
 #files
 Dockerfile*
