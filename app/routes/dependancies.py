@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
+from app.config import settings
+
 
 def read_imagefile(data: bytes) -> Image.Image:
     return Image.open(BytesIO(data))
@@ -46,7 +48,11 @@ def compute_histograms_channels(
     plt.xlabel("Color value")
     plt.ylabel("Pixel count")
 
-    plt.savefig(f"histograms/{filename}_{timestamp}.png")
+    dir = Path(settings.HISTOGRAMS_DIR).resolve()
+
+    saved_image_path = Path(f"{dir}/{filename}_{timestamp}.png")
+
+    plt.savefig(saved_image_path)
 
 
 def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
@@ -70,7 +76,10 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
 
     # Generate, save final image
     out = Image.fromarray(arr, mode="RGB")
-    out.save(f"mean_image/average_{timestamp}.png")
+
+    saved_image_path = Path(f"{settings.mean_image_dir}/average_{timestamp}.png")
+
+    out.save(saved_image_path)
 
 
 def get_items_list(directory: str, extension: str) -> List[Path]:

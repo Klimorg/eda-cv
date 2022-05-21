@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get install make git -y
+RUN apt-get update && apt-get install make git -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ARG USERNAME=vorph
 ARG USER_UID=1000
@@ -15,6 +15,9 @@ USER $USERNAME
 ENV PATH "$PATH:/home/$USERNAME/.local/bin"
 
 WORKDIR /home/$USERNAME
+
+
+ENV ENV_FOR_DYNACONF development
 
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
 # Prevents Python from writing .pyc files to disk

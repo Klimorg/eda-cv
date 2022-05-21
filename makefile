@@ -11,7 +11,7 @@ run_api:
 
 .PHONY: docker_build
 docker_build:
-	docker build -t vorphus/eda-cv:1.0-slim .
+	docker build -f Dockerfile.prod -t vorphus/eda-cv:1.0-slim .
 
 .PHONY: docker_run
 docker_run:

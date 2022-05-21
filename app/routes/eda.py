@@ -8,6 +8,7 @@ from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import FileResponse, Response
 from PIL import Image
 
+from app.config import settings
 from app.pydantic_models import Extension, FeatureReport
 from app.routes.dependancies import (
     compute_histograms_channels,
@@ -77,8 +78,10 @@ async def get_histograms_channels(file: UploadFile = File(...)):
 
     compute_histograms_channels(image=image, filename=filename, timestamp=timestamp)
     result = {"filename": file.filename}
+    dir = Path(settings.HISTOGRAMS_DIR).resolve()
+    saved_image_path = Path(f"{dir}/{filename}_{timestamp}.png")
 
-    return FileResponse(f"histograms/{filename}_{timestamp}.png", headers=result)
+    return FileResponse(saved_image_path, headers=result)
 
 
 @router.post(
@@ -119,4 +122,6 @@ async def get_dataset_mean_image(extension: Extension):
     ]
     compute_mean_image(images_list=images_list, timestamp=timestamp)
 
-    return FileResponse(f"mean_image/average_{timestamp}.png")
+    saved_image_path = Path(f"{settings.mean_image_dir}/average_{timestamp}.png")
+
+    return FileResponse(saved_image_path)

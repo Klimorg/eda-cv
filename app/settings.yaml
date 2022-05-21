@@ -1,0 +1,12 @@
+default:
+    name: ''
+development:
+    name: developer
+    data_dir: ./data
+    HISTOGRAMS_DIR: ./histograms
+    mean_image_dir: ./mean_image
+production:
+    name: admin
+    data_dir: /opt/data
+    histograms_dir: /opt/histograms
+    mean_image_dir: /opt/mean_image

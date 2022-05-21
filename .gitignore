@@ -131,3 +131,6 @@ dmypy.json
 
 app/graphs/*
 app/mean_image/*
+
+# Ignore dynaconf secret files
+app/.secrets.*
