@@ -1,9 +1,9 @@
 from io import BytesIO
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import pyplot as plt
 from PIL import Image
 
 from app.config import settings
@@ -15,6 +15,24 @@ def read_imagefile(data: bytes) -> Image.Image:
 
 def load_image_into_numpy_array(data: bytes) -> np.ndarray:
     return np.array(Image.open(BytesIO(data)))
+
+
+def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
+
+    red_mean_value = image[:, :, 0].mean()
+    green_mean_value = image[:, :, 1].mean()
+    blue_mean_value = image[:, :, 2].mean()
+
+    return red_mean_value, green_mean_value, blue_mean_value
+
+
+def compute_channels_std(image: np.ndarray) -> Tuple[float, float, float]:
+
+    red_std_value = image[:, :, 0].std()
+    green_std_value = image[:, :, 1].std()
+    blue_std_value = image[:, :, 2].std()
+
+    return red_std_value, green_std_value, blue_std_value
 
 
 def compute_histograms_channels(
@@ -48,9 +66,7 @@ def compute_histograms_channels(
     plt.xlabel("Color value")
     plt.ylabel("Pixel count")
 
-    dir = Path(settings.HISTOGRAMS_DIR).resolve()
-
-    saved_image_path = Path(f"{dir}/{filename}_{timestamp}.png")
+    saved_image_path = Path(f"{settings.histograms_dir}/{filename}_{timestamp}.png")
 
     plt.savefig(saved_image_path)
 

@@ -34,10 +34,17 @@ async def get_mean_values(file: UploadFile = File(...)):
     green_mean_value = image[:, :, 1].mean()
     blue_mean_value = image[:, :, 2].mean()
 
+    red_std_value = image[:, :, 0].std()
+    green_std_value = image[:, :, 1].std()
+    blue_std_value = image[:, :, 2].std()
+
     return FeatureReport(
         red_mean_value=red_mean_value,
         green_mean_value=green_mean_value,
         blue_mean_value=blue_mean_value,
+        red_std_value=red_std_value,
+        green_std_value=green_std_value,
+        blue_std_value=blue_std_value,
     )
 
 
@@ -77,9 +84,12 @@ async def get_histograms_channels(file: UploadFile = File(...)):
     image = load_image_into_numpy_array(await file.read())
 
     compute_histograms_channels(image=image, filename=filename, timestamp=timestamp)
+
     result = {"filename": file.filename}
-    dir = Path(settings.HISTOGRAMS_DIR).resolve()
-    saved_image_path = Path(f"{dir}/{filename}_{timestamp}.png")
+
+    saved_image_path = Path(
+        f"{Path(settings.histograms_dir)}/{filename}_{timestamp}.png",
+    )
 
     return FileResponse(saved_image_path, headers=result)
 

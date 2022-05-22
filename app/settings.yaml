@@ -3,7 +3,7 @@ default:
 development:
     name: developer
     data_dir: ./data
-    HISTOGRAMS_DIR: ./histograms
+    histograms_dir: ./histograms
     mean_image_dir: ./mean_image
 production:
     name: admin
