@@ -30,6 +30,14 @@ router = APIRouter()
     tags=["CV"],
 )
 async def get_mean_values(file: UploadFile = File(...)):
+    """_summary_
+
+    Args:
+        file (UploadFile, optional): _description_. Defaults to File(...).
+
+    Returns:
+        _type_: _description_
+    """
     image = load_image_into_numpy_array(await file.read())
 
     red_mean_value, green_mean_value, blue_mean_value = compute_channels_mean(image)
@@ -52,6 +60,14 @@ async def get_mean_values(file: UploadFile = File(...)):
     status_code=status.HTTP_200_OK,
 )
 async def image_endpoint(file: UploadFile = File(...)):
+    """_summary_
+
+    Args:
+        file (UploadFile, optional): _description_. Defaults to File(...).
+
+    Returns:
+        _type_: _description_
+    """
     image = read_imagefile(await file.read())
 
     # here you can do whatever you want with your image
@@ -78,6 +94,15 @@ async def get_histograms_channels(
     file: UploadFile = File(...),
     normalize: bool = False,
 ):
+    """_summary_
+
+    Args:
+        file (UploadFile, optional): _description_. Defaults to File(...).
+        normalize (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        _type_: _description_
+    """
 
     timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
 
@@ -102,6 +127,17 @@ async def get_histograms_channels(
     status_code=status.HTTP_200_OK,
 )
 async def get_dataset_mean_image(extension: Extension):
+    """_summary_
+
+    Args:
+        extension (Extension): _description_
+
+    Raises:
+        NotImplementedError: _description_
+
+    Returns:
+        _type_: _description_
+    """
 
     # TODO : check for image size and resize if necessary
 
@@ -112,7 +148,7 @@ async def get_dataset_mean_image(extension: Extension):
     elif extension == Extension.png:
         images_paths = get_items_list(directory=settings.data_dir, extension=".png")
     else:
-        pass
+        raise NotImplementedError
 
     images_list = [
         np.array(Image.open(image), dtype=np.float32) for image in images_paths
@@ -128,6 +164,17 @@ async def get_dataset_mean_image(extension: Extension):
     status_code=status.HTTP_200_OK,
 )
 async def get_mean_std_scatterplot(extension: Extension):
+    """_summary_
+
+    Args:
+        extension (Extension): _description_
+
+    Raises:
+        NotImplementedError: _description_
+
+    Returns:
+        _type_: _description_
+    """
     timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
 
     if extension == Extension.jpg:
@@ -135,7 +182,7 @@ async def get_mean_std_scatterplot(extension: Extension):
     elif extension == Extension.png:
         images_paths = get_items_list(directory=settings.data_dir, extension=".png")
     else:
-        pass
+        raise NotImplementedError
 
     images_list = [
         np.array(Image.open(image), dtype=np.float32) for image in images_paths

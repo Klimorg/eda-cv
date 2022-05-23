@@ -92,17 +92,20 @@ def compute_histograms_channels(
     # each color
     plt.figure()
     plt.xlim([0, pixel_range_value])
-    for channel_id, c in zip(channel_ids, colors):
+    for channel_id, color in zip(channel_ids, colors):
+        bins = 256
+
         histogram, bin_edges = np.histogram(
             image[:, :, channel_id],
-            bins=256,
+            bins=bins,
             range=(0, pixel_range_value),
+            density=True,
         )
-        plt.plot(bin_edges[0:-1], histogram, color=c)
+        plt.plot(bin_edges[0:-1], histogram, color=color)
 
     plt.title(f"Color Histogram of {filename}")
     plt.xlabel("Color value")
-    plt.ylabel("Pixel count")
+    plt.ylabel("Pixel density")
 
     saved_image_path = Path(f"{settings.histograms_dir}/{filename}_{timestamp}.png")
 
@@ -143,6 +146,7 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
 def get_items_list(directory: str, extension: str) -> List[Path]:
     """
     The code above does the following:
+
     1. Creates a list of all the files in the directory.
     2. Applies a filter to the list to only include files with the given extension.
     3. Sorts the list by file name.

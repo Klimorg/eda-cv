@@ -9,7 +9,7 @@ from app.routes import eda
 
 app = FastAPI(
     title="Basic API for Computer Vision EDA",
-    description="""TBA""",
+    description="TBA",
     version="0.1.0",
 )
 
@@ -27,6 +27,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def create_directories():
+    Path(f"{settings.data_dir}").mkdir(parents=True, exist_ok=True)
     Path(f"{settings.histograms_dir}").mkdir(parents=True, exist_ok=True)
     Path(f"{settings.mean_image_dir}").mkdir(parents=True, exist_ok=True)
     Path(f"{settings.scatterplots_dir}").mkdir(parents=True, exist_ok=True)
