@@ -1,0 +1,40 @@
+FROM python:3.9-slim
+
+RUN apt-get update && apt-get install make git -y --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+ARG USERNAME=vorph
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+
+RUN groupadd -g $USER_GID -o $USERNAME
+RUN useradd -m -u $USER_UID -g $USER_GID -o -s /bin/bash $USERNAME
+
+USER $USERNAME
+
+ENV PATH "$PATH:/home/$USERNAME/.local/bin"
+
+WORKDIR /home/$USERNAME
+
+
+ENV ENV_FOR_DYNACONF development
+
+# https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
+# Prevents Python from writing .pyc files to disk
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# ensures that the python output is sent straight to terminal (e.g. your container log)
+# without being first buffered and that you can see the output of your application (e.g. django logs)
+# in real time. Equivalent to python -u: https://docs.python.org/3/using/cmdline.html#cmdoption-u
+ENV PYTHONUNBUFFERED 1
+
+
+RUN /usr/local/bin/python -m pip install --upgrade pip
+# RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r requirements-dev.txt
+
+# COPY ./requirements.txt .
+# COPY ./requirements-dev.txt .
+# COPY ./app .
+
+EXPOSE 8080

@@ -4,7 +4,6 @@
 
 from pathlib import Path
 
-# import setuptools
 from setuptools import setup
 
 BASE_DIR = Path(__file__).parent

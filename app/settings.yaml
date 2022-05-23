@@ -1,0 +1,14 @@
+default:
+    name: ''
+development:
+    name: developer
+    data_dir: ./data
+    histograms_dir: ./results/histograms
+    mean_image_dir: ./results/mean_image
+    scatterplots_dir: ./results/scatterplots
+production:
+    name: admin
+    data_dir: /opt/data
+    histograms_dir: /opt/results/histograms
+    mean_image_dir: /opt/results/mean_image
+    scatterplots_dir: /opt/results/scatterplots

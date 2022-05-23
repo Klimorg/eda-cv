@@ -11,8 +11,14 @@ run_api:
 
 .PHONY: docker_build
 docker_build:
-	docker build -t vorphus/eda-cv:1.0-slim .
+	docker build -f Dockerfile.prod -t vorphus/eda-cv:1.0-slim .
 
 .PHONY: docker_run
 docker_run:
 	docker run -it --rm --name eda-cv -p 8080:8080 vorphus/eda-cv:1.0-slim
+
+.PHONY: install-dev
+install-dev:
+	python -m pip install -e ".[dev]" --no-cache-dir
+	pre-commit install
+	pre-commit autoupdate

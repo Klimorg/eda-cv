@@ -1,9 +1,10 @@
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get upgrade -y
-# RUN apt install libgl1-mesa-glx libglib2.0-0 -y
+RUN apt-get update -y && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
+
+ENV ENV_FOR_DYNACONF production
 
 # https://docs.python.org/3/using/cmdline.html#envvar-PYTHONDONTWRITEBYTECODE
 # Prevents Python from writing .pyc files to disk
@@ -13,9 +14,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # without being first buffered and that you can see the output of your application (e.g. django logs)
 # in real time. Equivalent to python -u: https://docs.python.org/3/using/cmdline.html#cmdoption-u
 ENV PYTHONUNBUFFERED 1
-# ENV ENVIRONMENT prod
-# ENV TESTING 0
-
 
 COPY ./requirements.txt /opt/app/requirements.txt
 
@@ -31,6 +29,3 @@ EXPOSE 8080
 
 # Start app
 ENTRYPOINT ["gunicorn", "-c", "app/gunicorn.py", "-k", "uvicorn.workers.UvicornWorker", "app.main:app"]
-
-# ENTRYPOINT ["uvicorn", "app.main:app"]
-# CMD ["--host", "0.0.0.0", "--port", "8080"]
