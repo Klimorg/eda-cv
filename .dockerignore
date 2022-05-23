@@ -9,8 +9,7 @@ site*
 .pytest_cache*
 .devcontainer*
 data*
-histograms*
-mean_image*
+results*
 
 #files
 Dockerfile*

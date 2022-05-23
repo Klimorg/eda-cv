@@ -15,6 +15,7 @@ from app.routes.dependancies import (
     compute_channels_std,
     compute_histograms_channels,
     compute_mean_image,
+    compute_scatterplot,
     get_items_list,
     load_image_into_numpy_array,
     read_imagefile,
@@ -81,13 +82,13 @@ async def get_histograms_channels(file: UploadFile = File(...)):
     filename = Path(file.filename).stem
     image = load_image_into_numpy_array(await file.read())
 
-    compute_histograms_channels(image=image, filename=filename, timestamp=timestamp)
+    saved_image_path = compute_histograms_channels(
+        image=image,
+        filename=filename,
+        timestamp=timestamp,
+    )
 
     result = {"filename": file.filename}
-
-    saved_image_path = Path(
-        f"{Path(settings.histograms_dir)}/{filename}_{timestamp}.png",
-    )
 
     return FileResponse(saved_image_path, headers=result)
 
@@ -98,6 +99,8 @@ async def get_histograms_channels(file: UploadFile = File(...)):
     status_code=status.HTTP_200_OK,
 )
 async def get_dataset_mean_image(extension: Extension):
+
+    # TODO : check for image size and resize if necessary
 
     timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
 
@@ -111,9 +114,7 @@ async def get_dataset_mean_image(extension: Extension):
     images_list = [
         np.array(Image.open(image), dtype=np.float32) for image in images_paths
     ]
-    compute_mean_image(images_list=images_list, timestamp=timestamp)
-
-    saved_image_path = Path(f"{settings.mean_image_dir}/average_{timestamp}.png")
+    saved_image_path = compute_mean_image(images_list=images_list, timestamp=timestamp)
 
     return FileResponse(saved_image_path)
 
@@ -137,13 +138,15 @@ async def get_mean_std_scatterplot(extension: Extension):
         np.array(Image.open(image), dtype=np.float32) for image in images_paths
     ]
 
-    means_red = [compute_channels_mean(image)[0] for image in images_list]
-    stds_red = [compute_channels_std(image)[0] for image in images_list]
+    # means_red = [compute_channels_mean(image)[0] for image in images_list]
+    # stds_red = [compute_channels_std(image)[0] for image in images_list]
 
-    plt.scatter(means_red, stds_red, c="red", alpha=0.5)
+    # plt.scatter(means_red, stds_red, c="red", alpha=0.5)
 
-    saved_image_path = Path(f"{settings.histograms_dir}/scatter_{timestamp}.png")
+    # saved_image_path = Path(f"{settings.scatterplot_dir}/scatter_{timestamp}.png")
 
-    plt.savefig(saved_image_path)
+    # plt.savefig(saved_image_path)
+
+    saved_image_path = compute_scatterplot(images_list=images_list, timestamp=timestamp)
 
     return FileResponse(saved_image_path)

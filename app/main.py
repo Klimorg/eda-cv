@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
+from app.config import settings
 from app.routes import eda
 
 app = FastAPI(
@@ -20,6 +23,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def create_directories():
+    Path(f"{settings.histograms_dir}").mkdir(parents=True, exist_ok=True)
+    Path(f"{settings.mean_image_dir}").mkdir(parents=True, exist_ok=True)
+    Path(f"{settings.scatterplots_dir}").mkdir(parents=True, exist_ok=True)
 
 
 @app.get(

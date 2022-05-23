@@ -39,7 +39,7 @@ def compute_histograms_channels(
     image: np.ndarray,
     filename: str,
     timestamp: str,
-) -> None:
+) -> Path:
     """_summary_
 
     Args:
@@ -62,7 +62,7 @@ def compute_histograms_channels(
         )
         plt.plot(bin_edges[0:-1], histogram, color=c)
 
-    plt.title("Color Histogram")
+    plt.title(f"Color Histogram of {filename}")
     plt.xlabel("Color value")
     plt.ylabel("Pixel count")
 
@@ -70,8 +70,10 @@ def compute_histograms_channels(
 
     plt.savefig(saved_image_path)
 
+    return saved_image_path
 
-def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
+
+def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
     """_summary_
 
     Args:
@@ -97,6 +99,8 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> None:
 
     out.save(saved_image_path)
 
+    return saved_image_path
+
 
 def get_items_list(directory: str, extension: str) -> List[Path]:
     """
@@ -111,3 +115,25 @@ def get_items_list(directory: str, extension: str) -> List[Path]:
         for file in Path(directory).glob(f"**/*{extension}")
         if file.is_file()
     )
+
+
+def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
+
+    colors = ("red", "green", "blue")
+    channel_ids = (0, 1, 2)
+
+    for channel, color in zip(channel_ids, colors):
+        means = [compute_channels_mean(image)[channel] for image in images_list]
+        stds = [compute_channels_std(image)[channel] for image in images_list]
+
+        plt.scatter(means, stds, c=color, alpha=0.5)
+
+    plt.title(f"Mean-std scatterplot")
+    plt.xlabel("means")
+    plt.ylabel("stds")
+
+    saved_image_path = Path(f"{settings.scatterplots_dir}/scatter_{timestamp}.png")
+
+    plt.savefig(saved_image_path)
+
+    return saved_image_path

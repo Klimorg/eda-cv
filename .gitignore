@@ -129,11 +129,7 @@ dmypy.json
 .pyre/
 
 
-app/graphs/*
-app/mean_image/*
-
 data*
-histograms*
-mean_image*
+results*
 # Ignore dynaconf secret files
 app/.secrets.*
