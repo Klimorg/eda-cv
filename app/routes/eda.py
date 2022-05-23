@@ -104,7 +104,7 @@ async def get_histograms_channels(
         _type_: _description_
     """
 
-    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+    timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
     filename = Path(file.filename).stem
     image = load_image_into_numpy_array(await file.read())
@@ -141,7 +141,7 @@ async def get_dataset_mean_image(extension: Extension):
 
     # TODO : check for image size and resize if necessary
 
-    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+    timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
     if extension == Extension.jpg:
         images_paths = get_items_list(directory=settings.data_dir, extension=".jpg")
@@ -175,7 +175,7 @@ async def get_mean_std_scatterplot(extension: Extension):
     Returns:
         _type_: _description_
     """
-    timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
+    timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
     if extension == Extension.jpg:
         images_paths = get_items_list(directory=settings.data_dir, extension=".jpg")
@@ -185,7 +185,7 @@ async def get_mean_std_scatterplot(extension: Extension):
         raise NotImplementedError
 
     images_list = [
-        np.array(Image.open(image), dtype=np.float32) for image in images_paths
+        np.array(Image.open(image), dtype=np.float32) / 255 for image in images_paths
     ]
 
     saved_image_path = compute_scatterplot(images_list=images_list, timestamp=timestamp)

@@ -107,7 +107,9 @@ def compute_histograms_channels(
     plt.xlabel("Color value")
     plt.ylabel("Pixel density")
 
-    saved_image_path = Path(f"{settings.histograms_dir}/{filename}_{timestamp}.png")
+    saved_image_path = Path(
+        f"{settings.histograms_dir}/{filename}_{timestamp}.png",
+    ).resolve()
 
     plt.savefig(saved_image_path)
 
@@ -136,7 +138,9 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
     # Generate, save final image
     out = Image.fromarray(arr, mode="RGB")
 
-    saved_image_path = Path(f"{settings.mean_image_dir}/average_{timestamp}.png")
+    saved_image_path = Path(
+        f"{settings.mean_image_dir}/average_{timestamp}.png",
+    ).resolve()
 
     out.save(saved_image_path)
 
@@ -179,11 +183,13 @@ def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
 
         plt.scatter(means, stds, c=color, alpha=0.5)
 
-    plt.title("Mean-std scatterplot")
+    plt.title("Mean-std scatterplot. Pixel values in [0,1]")
     plt.xlabel("means")
     plt.ylabel("stds")
 
-    saved_image_path = Path(f"{settings.scatterplots_dir}/scatter_{timestamp}.png")
+    saved_image_path = Path(
+        f"{settings.scatterplots_dir}/scatter_{timestamp}.png",
+    ).resolve()
 
     plt.savefig(saved_image_path)
 
