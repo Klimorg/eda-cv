@@ -10,14 +10,38 @@ from app.config import settings
 
 
 def read_imagefile(data: bytes) -> Image.Image:
+    """_summary_
+
+    Args:
+        data (bytes): _description_
+
+    Returns:
+        Image.Image: _description_
+    """
     return Image.open(BytesIO(data))
 
 
 def load_image_into_numpy_array(data: bytes) -> np.ndarray:
+    """_summary_
+
+    Args:
+        data (bytes): _description_
+
+    Returns:
+        np.ndarray: _description_
+    """
     return np.array(Image.open(BytesIO(data)))
 
 
 def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
+    """_summary_
+
+    Args:
+        image (np.ndarray): _description_
+
+    Returns:
+        Tuple[float, float, float]: _description_
+    """
 
     red_mean_value = image[:, :, 0].mean()
     green_mean_value = image[:, :, 1].mean()
@@ -27,6 +51,14 @@ def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
 
 
 def compute_channels_std(image: np.ndarray) -> Tuple[float, float, float]:
+    """_summary_
+
+    Args:
+        image (np.ndarray): _description_
+
+    Returns:
+        Tuple[float, float, float]: _description_
+    """
 
     red_std_value = image[:, :, 0].std()
     green_std_value = image[:, :, 1].std()
@@ -39,6 +71,7 @@ def compute_histograms_channels(
     image: np.ndarray,
     filename: str,
     timestamp: str,
+    normalize: bool,
 ) -> Path:
     """_summary_
 
@@ -49,16 +82,21 @@ def compute_histograms_channels(
     """
     colors = ("red", "green", "blue")
     channel_ids = (0, 1, 2)
+    pixel_range_value = 255
+
+    if normalize:
+        image = image / 255
+        pixel_range_value = 1
 
     # create the histogram plot, with three lines, one for
     # each color
     plt.figure()
-    plt.xlim([0, 255])
+    plt.xlim([0, pixel_range_value])
     for channel_id, c in zip(channel_ids, colors):
         histogram, bin_edges = np.histogram(
             image[:, :, channel_id],
             bins=256,
-            range=(0, 255),
+            range=(0, pixel_range_value),
         )
         plt.plot(bin_edges[0:-1], histogram, color=c)
 
@@ -118,6 +156,15 @@ def get_items_list(directory: str, extension: str) -> List[Path]:
 
 
 def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
+    """_summary_
+
+    Args:
+        images_list (List[np.ndarray]): _description_
+        timestamp (str): _description_
+
+    Returns:
+        Path: _description_
+    """
 
     colors = ("red", "green", "blue")
     channel_ids = (0, 1, 2)
@@ -128,7 +175,7 @@ def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
 
         plt.scatter(means, stds, c=color, alpha=0.5)
 
-    plt.title(f"Mean-std scatterplot")
+    plt.title("Mean-std scatterplot")
     plt.xlabel("means")
     plt.ylabel("stds")
 

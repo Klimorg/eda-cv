@@ -1,4 +1,4 @@
-# Bienvenu sur la documentation de eda-cv
+# Bienvenue sur la documentation de eda-cv
 
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org).

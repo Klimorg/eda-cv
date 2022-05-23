@@ -5,7 +5,6 @@ import arrow
 import numpy as np
 from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import FileResponse, Response
-from matplotlib import pyplot as plt
 from PIL import Image
 
 from app.config import settings
@@ -75,7 +74,10 @@ async def image_endpoint(file: UploadFile = File(...)):
     status_code=status.HTTP_200_OK,
     operation_id="compute_histograms_channels",
 )
-async def get_histograms_channels(file: UploadFile = File(...)):
+async def get_histograms_channels(
+    file: UploadFile = File(...),
+    normalize: bool = False,
+):
 
     timestamp = arrow.now().format("YYYY-MM-DD_HH:mm:ss")
 
@@ -86,6 +88,7 @@ async def get_histograms_channels(file: UploadFile = File(...)):
         image=image,
         filename=filename,
         timestamp=timestamp,
+        normalize=normalize,
     )
 
     result = {"filename": file.filename}
@@ -137,15 +140,6 @@ async def get_mean_std_scatterplot(extension: Extension):
     images_list = [
         np.array(Image.open(image), dtype=np.float32) for image in images_paths
     ]
-
-    # means_red = [compute_channels_mean(image)[0] for image in images_list]
-    # stds_red = [compute_channels_std(image)[0] for image in images_list]
-
-    # plt.scatter(means_red, stds_red, c="red", alpha=0.5)
-
-    # saved_image_path = Path(f"{settings.scatterplot_dir}/scatter_{timestamp}.png")
-
-    # plt.savefig(saved_image_path)
 
     saved_image_path = compute_scatterplot(images_list=images_list, timestamp=timestamp)
 

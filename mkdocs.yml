@@ -30,6 +30,19 @@ theme:
 plugins:
   - search:
       lang: fr
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+          python:
+            rendering:
+              show_source: true
+            selection:
+              filters:
+                - "!^_"
+                - "^__init__$"
+                - "!^can_replace$"
+      watch:
+        - app/
 
 extra_css:
   - stylesheets/extra.css
@@ -68,3 +81,4 @@ extra_javascript:
 
 nav:
   - Accueil: index.md
+  - Dependancies: dependancies.md
