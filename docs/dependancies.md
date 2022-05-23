@@ -1,6 +1,6 @@
 # Source code of dependancies functions
 
-::: app.routes.dependancies
+::: app.dependancies.eda_functions
     handler: python
     rendering:
       show_root_heading: true

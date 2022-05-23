@@ -1,6 +1,14 @@
 # .github/workflows/main.yml
 name: Test and Push
 on: [push, workflow_call]
+  # push:
+  #   branches:
+  #   - master
+  #   - main
+  # pull_request:
+  #   branches:
+  #   - master
+  #   - main
 
 jobs:
   tests:

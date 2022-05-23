@@ -3,11 +3,11 @@ from pathlib import Path
 from typing import List, Tuple
 
 import numpy as np
-from loguru import logger
 from matplotlib import pyplot as plt
 from PIL import Image
 
 from app.config import settings
+from app.dependancies.errors import HeightWidthMismatchError, validate_height_width
 
 
 def read_imagefile(data: bytes) -> Image.Image:
@@ -78,6 +78,8 @@ def compute_histograms_channels(
     The bins of the histograms are all of width 1, meaning that the normed histogram here defines a
     Probability mass function on each channels, i.e. the sum of all values for each channels is equal to 1.
 
+    See the following [StackOverflow post](https://stackoverflow.com/questions/21532667/numpy-histogram-cumulative-density-does-not-sum-to-1).
+
     Args:
         image (np.ndarray): The image, as a np.array, for which you want to compute the channels normed histograms.
         filename (str): The name of the image file.
@@ -97,7 +99,6 @@ def compute_histograms_channels(
     plt.figure()
     plt.xlim([0, pixel_range_value])
     for channel_id, color in zip(channel_ids, colors):
-        # bins = 256
 
         histogram, bin_edges = np.histogram(
             image[:, :, channel_id],
@@ -132,11 +133,18 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
     """
     # Assuming all images are the same size, get dimensions of first image
     height, width, _ = images_list[0].shape
+
+    try:
+        validate_height_width(images_list=images_list)
+    except HeightWidthMismatchError as err:
+        raise err
+
     num_images = len(images_list)
+
     # Create a numpy array of floats to store the average (assume RGB images)
     arr = np.zeros((height, width, 3), dtype=np.float32)
 
-    # Build up average pixel intensities, casting each image as an array of floats
+    # Build up average pixel intensities
     arr = sum(images_list) / num_images
 
     # Round values in array and cast as 8-bit integer
@@ -171,7 +179,7 @@ def get_items_list(directory: str, extension: str) -> List[Path]:
 
 
 def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
-    """Compute the mean vs std scatterplot of an image dataset
+    """Compute the mean vs std scatterplot of an image dataset.
 
     Args:
         images_list (List[np.ndarray]): The image dataset on which you compute the mean vs std scatterplot.

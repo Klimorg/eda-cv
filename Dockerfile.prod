@@ -21,9 +21,6 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install --no-cache-dir --upgrade -r /opt/app/requirements.txt
 
 COPY ./app /opt/app
-RUN mkdir -p /opt/data
-RUN mkdir -p /opt/mean_image
-RUN mkdir -p /opt/histograms
 
 EXPOSE 8080
 

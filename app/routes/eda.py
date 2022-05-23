@@ -8,8 +8,7 @@ from fastapi.responses import FileResponse, Response
 from PIL import Image
 
 from app.config import settings
-from app.pydantic_models import Extension, FeatureReport
-from app.routes.dependancies import (
+from app.dependancies.eda_functions import (
     compute_channels_mean,
     compute_channels_std,
     compute_histograms_channels,
@@ -19,6 +18,7 @@ from app.routes.dependancies import (
     load_image_into_numpy_array,
     read_imagefile,
 )
+from app.pydantic_models import Extension, FeatureReport
 
 router = APIRouter()
 
@@ -30,14 +30,7 @@ router = APIRouter()
     tags=["CV"],
 )
 async def get_mean_values(file: UploadFile = File(...)):
-    """_summary_
-
-    Args:
-        file (UploadFile, optional): _description_. Defaults to File(...).
-
-    Returns:
-        _type_: _description_
-    """
+    """Return the mean and standard deviation over each channels of an RGB images."""
     image = load_image_into_numpy_array(await file.read())
 
     red_mean_value, green_mean_value, blue_mean_value = compute_channels_mean(image)
@@ -60,14 +53,7 @@ async def get_mean_values(file: UploadFile = File(...)):
     status_code=status.HTTP_200_OK,
 )
 async def image_endpoint(file: UploadFile = File(...)):
-    """_summary_
-
-    Args:
-        file (UploadFile, optional): _description_. Defaults to File(...).
-
-    Returns:
-        _type_: _description_
-    """
+    """Placeholder. Just return the given image."""
     image = read_imagefile(await file.read())
 
     # here you can do whatever you want with your image
@@ -93,15 +79,7 @@ async def image_endpoint(file: UploadFile = File(...)):
 async def get_histograms_channels(
     file: UploadFile = File(...),
 ):
-    """_summary_
-
-    Args:
-        file (UploadFile, optional): _description_. Defaults to File(...).
-        normalize (bool, optional): _description_. Defaults to False.
-
-    Returns:
-        _type_: _description_
-    """
+    """Compute the channels normed histograms of an image."""
 
     timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
@@ -125,17 +103,7 @@ async def get_histograms_channels(
     status_code=status.HTTP_200_OK,
 )
 async def get_dataset_mean_image(extension: Extension):
-    """_summary_
-
-    Args:
-        extension (Extension): _description_
-
-    Raises:
-        NotImplementedError: _description_
-
-    Returns:
-        _type_: _description_
-    """
+    """Compute the mean image of an image dataset."""
 
     # TODO : check for image size and resize if necessary
 
@@ -162,17 +130,7 @@ async def get_dataset_mean_image(extension: Extension):
     status_code=status.HTTP_200_OK,
 )
 async def get_mean_std_scatterplot(extension: Extension):
-    """_summary_
-
-    Args:
-        extension (Extension): _description_
-
-    Raises:
-        NotImplementedError: _description_
-
-    Returns:
-        _type_: _description_
-    """
+    """Compute the mean vs std scatterplot of an image dataset."""
     timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
     if extension == Extension.jpg:

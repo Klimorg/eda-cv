@@ -1,6 +1,4 @@
 #directories
-app/graphs/*
-app/men_image/*
 tests*
 docs*
 site*
@@ -10,6 +8,7 @@ site*
 .devcontainer*
 data*
 results*
+*.egg-info/
 
 #files
 Dockerfile*
