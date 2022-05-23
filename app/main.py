@@ -3,6 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
+from loguru import logger
 
 from app.config import settings
 from app.routes import eda
@@ -27,7 +28,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def create_directories():
+    logger.info("Creating data directory.")
     Path(f"{settings.data_dir}").mkdir(parents=True, exist_ok=True)
+    logger.info("Creating results directories.")
     Path(f"{settings.histograms_dir}").mkdir(parents=True, exist_ok=True)
     Path(f"{settings.mean_image_dir}").mkdir(parents=True, exist_ok=True)
     Path(f"{settings.scatterplots_dir}").mkdir(parents=True, exist_ok=True)

@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 import numpy as np
+from loguru import logger
 from matplotlib import pyplot as plt
 from PIL import Image
 
@@ -10,37 +11,37 @@ from app.config import settings
 
 
 def read_imagefile(data: bytes) -> Image.Image:
-    """_summary_
+    """Read an image stored in bytes format.
 
     Args:
-        data (bytes): _description_
+        data (bytes): The images stored in bytes format.
 
     Returns:
-        Image.Image: _description_
+        Image.Image: The read image.
     """
     return Image.open(BytesIO(data))
 
 
 def load_image_into_numpy_array(data: bytes) -> np.ndarray:
-    """_summary_
+    """Load an image stored in bytes format in a numpy array.
 
     Args:
-        data (bytes): _description_
+        data (bytes): The images stored in bytes format.
 
     Returns:
-        np.ndarray: _description_
+        np.ndarray: The np.array associated to the image.
     """
     return np.array(Image.open(BytesIO(data)))
 
 
 def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
-    """_summary_
+    """Compute the mean over each channels of an RGB images.
 
     Args:
-        image (np.ndarray): _description_
+        image (np.ndarray): The image, as a np.array, for which you want to compute the means.
 
     Returns:
-        Tuple[float, float, float]: _description_
+        Tuple[float, float, float]: The RGB means.
     """
 
     red_mean_value = image[:, :, 0].mean()
@@ -51,13 +52,13 @@ def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
 
 
 def compute_channels_std(image: np.ndarray) -> Tuple[float, float, float]:
-    """_summary_
+    """Compute the standard deviation over each channels of an RGB images.
 
     Args:
-        image (np.ndarray): _description_
+        image (np.ndarray): The image, as a np.array, for which you want to compute the stds.
 
     Returns:
-        Tuple[float, float, float]: _description_
+        Tuple[float, float, float]: The RGB stds.
     """
 
     red_std_value = image[:, :, 0].std()
@@ -71,29 +72,32 @@ def compute_histograms_channels(
     image: np.ndarray,
     filename: str,
     timestamp: str,
-    normalize: bool,
 ) -> Path:
-    """_summary_
+    """Compute the channels normed histograms of an image.
+
+    The bins of the histograms are all of width 1, meaning that the normed histogram here defines a
+    Probability mass function on each channels, i.e. the sum of all values for each channels is equal to 1.
 
     Args:
-        image (np.ndarray): _description_
-        filename (str): _description_
-        timestamp (str): _description_
+        image (np.ndarray): The image, as a np.array, for which you want to compute the channels normed histograms.
+        filename (str): The name of the image file.
+        timestamp (str): The timestamp at which the endpoint has been called.
+
+    Returns:
+        Path: The path to the histogram.
     """
     colors = ("red", "green", "blue")
     channel_ids = (0, 1, 2)
-    pixel_range_value = 255
 
-    if normalize:
-        image = image / 255
-        pixel_range_value = 1
+    pixel_range_value = 255
+    bins = np.arange(0, pixel_range_value)
 
     # create the histogram plot, with three lines, one for
     # each color
     plt.figure()
     plt.xlim([0, pixel_range_value])
     for channel_id, color in zip(channel_ids, colors):
-        bins = 256
+        # bins = 256
 
         histogram, bin_edges = np.histogram(
             image[:, :, channel_id],
@@ -117,11 +121,14 @@ def compute_histograms_channels(
 
 
 def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
-    """_summary_
+    """Compute the mean image of an image dataset.
 
     Args:
-        images_list (List[np.ndarray]): _description_
-        timestamp (str): _description_
+        images_list (List[np.ndarray]): The image dataset on which you compute the mean image.
+        timestamp (str): The timestamp at which the endpoint has been called.
+
+    Returns:
+        Path: The path to the mean image.
     """
     # Assuming all images are the same size, get dimensions of first image
     height, width, _ = images_list[0].shape
@@ -164,14 +171,14 @@ def get_items_list(directory: str, extension: str) -> List[Path]:
 
 
 def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
-    """_summary_
+    """Compute the mean vs std scatterplot of an image dataset
 
     Args:
-        images_list (List[np.ndarray]): _description_
-        timestamp (str): _description_
+        images_list (List[np.ndarray]): The image dataset on which you compute the mean vs std scatterplot.
+        timestamp (str): The timestamp at which the endpoint has been called.
 
     Returns:
-        Path: _description_
+        Path: The path to the scatterplot.
     """
 
     colors = ("red", "green", "blue")

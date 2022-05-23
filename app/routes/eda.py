@@ -92,7 +92,6 @@ async def image_endpoint(file: UploadFile = File(...)):
 )
 async def get_histograms_channels(
     file: UploadFile = File(...),
-    normalize: bool = False,
 ):
     """_summary_
 
@@ -113,7 +112,6 @@ async def get_histograms_channels(
         image=image,
         filename=filename,
         timestamp=timestamp,
-        normalize=normalize,
     )
 
     result = {"filename": file.filename}
