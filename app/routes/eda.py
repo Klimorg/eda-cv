@@ -5,6 +5,7 @@ import arrow
 import numpy as np
 from fastapi import APIRouter, File, UploadFile, status
 from fastapi.responses import FileResponse, Response
+from loguru import logger
 from PIL import Image
 
 from app.config import settings
@@ -109,12 +110,10 @@ async def get_dataset_mean_image(extension: Extension):
 
     timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
-    if extension == Extension.jpg:
-        images_paths = get_items_list(directory=settings.data_dir, extension=".jpg")
-    elif extension == Extension.png:
-        images_paths = get_items_list(directory=settings.data_dir, extension=".png")
-    else:
-        raise NotImplementedError
+    images_paths = get_items_list(
+        directory=settings.data_dir,
+        extension=extension.value,
+    )
 
     images_list = [
         np.array(Image.open(image), dtype=np.float32) for image in images_paths
@@ -133,12 +132,11 @@ async def get_mean_std_scatterplot(extension: Extension):
     """Compute the mean vs std scatterplot of an image dataset."""
     timestamp = arrow.now().format("YYYY-MM-DD_HH-mm-ss")
 
-    if extension == Extension.jpg:
-        images_paths = get_items_list(directory=settings.data_dir, extension=".jpg")
-    elif extension == Extension.png:
-        images_paths = get_items_list(directory=settings.data_dir, extension=".png")
-    else:
-        raise NotImplementedError
+    images_paths = get_items_list(
+        directory=settings.data_dir,
+        extension=extension.value,
+    )
+    # logger.info(f"{[Path(image_path).parent.stem for image_path in images_paths[:5]]}")
 
     images_list = [
         np.array(Image.open(image), dtype=np.float32) / 255 for image in images_paths

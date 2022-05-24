@@ -209,3 +209,36 @@ def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:
     plt.savefig(saved_image_path)
 
     return saved_image_path
+
+
+# from sklearn.decomposition import PCA
+# from math import ceil
+
+# def eigenimages(full_mat, title, n_comp = 0.7, size = (64, 64)):
+#     # fit PCA to describe n_comp * variability in the class
+#     pca = PCA(n_components = n_comp, whiten = True)
+#     pca.fit(full_mat)
+#     print('Number of PC: ', pca.n_components_)
+#     return pca
+
+# def plot_pca(pca, size = (64, 64)):
+#     # plot eigenimages in a grid
+#     n = pca.n_components_
+#     fig = plt.figure(figsize=(8, 8))
+#     r = int(n**.5)
+#     c = ceil(n/ r)
+#     for i in range(n):
+#         ax = fig.add_subplot(r, c, i + 1, xticks = [], yticks = [])
+#         ax.imshow(pca.components_[i].reshape(size),
+#                   cmap='Greys_r')
+#     plt.axis('off')
+#     plt.show()
+
+# plot_pca(eigenimages(normal_images, 'NORMAL'))
+# plot_pca(eigenimages(pnemonia_images, 'PNEUMONIA'))
+
+# contrast_mean = norm_mean - pneu_mean
+# plt.imshow(contrast_mean, cmap='bwr')
+# plt.title(f'Difference Between Normal & Pneumonia Average')
+# plt.axis('off')
+# plt.show()
