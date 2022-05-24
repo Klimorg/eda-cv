@@ -28,7 +28,7 @@ class EmbeddingEngine:
         logger.info(f"{images.shape}")
 
         logits = self.loaded_model.run(["avg_pool"], {"input": images})
-        logger.info(f"{type(logits)}")
+        # logger.info(f"{type(logits)}")
 
         return logits[0]
 

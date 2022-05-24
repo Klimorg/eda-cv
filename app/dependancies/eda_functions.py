@@ -1,4 +1,3 @@
-from io import BytesIO
 from pathlib import Path
 from typing import List, Tuple
 
@@ -8,30 +7,6 @@ from PIL import Image
 
 from app.config import settings
 from app.dependancies.errors import HeightWidthMismatchError, validate_height_width
-
-
-def read_imagefile(data: bytes) -> Image.Image:
-    """Read an image stored in bytes format.
-
-    Args:
-        data (bytes): The images stored in bytes format.
-
-    Returns:
-        Image.Image: The read image.
-    """
-    return Image.open(BytesIO(data))
-
-
-def load_image_into_numpy_array(data: bytes) -> np.ndarray:
-    """Load an image stored in bytes format in a numpy array.
-
-    Args:
-        data (bytes): The images stored in bytes format.
-
-    Returns:
-        np.ndarray: The np.array associated to the image.
-    """
-    return np.array(Image.open(BytesIO(data)))
 
 
 def compute_channels_mean(image: np.ndarray) -> Tuple[float, float, float]:
@@ -160,22 +135,6 @@ def compute_mean_image(images_list: List[np.ndarray], timestamp: str) -> Path:
     out.save(saved_image_path)
 
     return saved_image_path
-
-
-def get_items_list(directory: str, extension: str) -> List[Path]:
-    """
-    The code above does the following:
-
-    1. Creates a list of all the files in the directory.
-    2. Applies a filter to the list to only include files with the given extension.
-    3. Sorts the list by file name.
-    4. Returns the list.
-    """
-    return sorted(
-        Path(file).absolute()
-        for file in Path(directory).glob(f"**/*{extension}")
-        if file.is_file()
-    )
 
 
 def compute_scatterplot(images_list: List[np.ndarray], timestamp: str) -> Path:

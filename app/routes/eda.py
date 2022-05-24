@@ -15,6 +15,8 @@ from app.dependancies.eda_functions import (
     compute_histograms_channels,
     compute_mean_image,
     compute_scatterplot,
+)
+from app.dependancies.utils import (
     get_items_list,
     load_image_into_numpy_array,
     read_imagefile,
