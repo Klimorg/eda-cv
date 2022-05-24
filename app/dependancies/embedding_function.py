@@ -3,13 +3,14 @@ from typing import List
 
 import numpy as np
 import onnxruntime as rt
+import umap
 from loguru import logger
 from matplotlib import pyplot as plt
 from PIL import Image
 from sklearn.manifold import TSNE
 
 from app.config import settings
-from app.pydantic_models import EmbeddingsModel, Providers
+from app.pydantic_models import ClusteringMode, EmbeddingsModel, Providers
 
 
 class EmbeddingEngine:
@@ -17,8 +18,16 @@ class EmbeddingEngine:
         self, model: EmbeddingsModel, provider: Providers, *args, **kwargs
     ) -> None:
         super().__init__(*args, **kwargs)
-        self.model = model.value
-        self.provider = [provider.value]
+        if model == EmbeddingsModel.resnet50v2:
+            self.model = settings.resnet50v2
+        else:
+            raise NotImplementedError
+
+        if provider == Providers.cpu:
+            self.provider = [settings.cpu]
+        else:
+            logger.warning("GPU support not implemented, please chose cpu support.")
+            raise NotImplementedError
 
         self.loaded_model = rt.InferenceSession(self.model, providers=self.provider)
 
@@ -29,24 +38,35 @@ class EmbeddingEngine:
         images = [np.asarray(image, dtype="float32") / 255 for image in images_list]
 
         images = np.reshape(images, (-1, 224, 224, 3))
-        logger.info(f"{images.shape}")
 
         logits = self.loaded_model.run(["avg_pool"], {"input": images})
 
         return logits[0]
 
-    def compute_tsne(self, logits: np.ndarray, n_components: int = 2) -> np.ndarray:
-        return TSNE(
-            n_components=2,
-            learning_rate="auto",
-            init="random",
-        ).fit_transform(logits)
+    def compute_clustering(
+        self,
+        logits: np.ndarray,
+        mode: ClusteringMode,
+    ) -> np.ndarray:
+
+        if mode == ClusteringMode.tsne:
+            clusters = TSNE(
+                n_components=2,
+                learning_rate="auto",
+                init="random",
+            ).fit_transform(logits)
+        elif mode == ClusteringMode.umap:
+            reducer = umap.UMAP()
+            clusters = reducer.fit_transform(logits)
+
+        return clusters
 
     def plot(
         self,
         logits: np.ndarray,
         images_paths: List[Path],
         timestamp: str,
+        mode: ClusteringMode,
     ) -> Path:
 
         images_labels = [Path(image_path).parent.stem for image_path in images_paths]
@@ -67,7 +87,11 @@ class EmbeddingEngine:
         plt.figure(figsize=(10, 10))
         scatter = plt.scatter(logits[:, 0], logits[:, 1], c=tags, cmap=cmap)
 
-        plt.title("tSNE scatterplot with ResNet50v2 preprocess")
+        if mode == ClusteringMode.tsne:
+            plt.title("tSNE scatterplot with ResNet50v2 preprocess")
+        if mode == ClusteringMode.umap:
+            plt.title("UMAP scatterplot with ResNet50v2 preprocess")
+
         plt.xlabel("Dimension 1")
         plt.ylabel("Dimension 2")
         plt.legend(

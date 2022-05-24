@@ -1,5 +1,8 @@
 default:
     name: ''
+    resnet50v2: app/dependancies/models/resnet50v2.onnx
+    cpu: CPUExecutionProvider
+    gpu: CUDAExecutionProvider
 development:
     name: developer
     data_dir: ./data

@@ -1,7 +1,5 @@
 from enum import Enum
-from typing import List
 
-import numpy as np
 from pydantic import BaseModel
 
 
@@ -20,7 +18,7 @@ class Extension(Enum):
 
 
 class EmbeddingsModel(Enum):
-    resnet50v2 = "app/dependancies/models/resnet50v2.onnx"
+    resnet50v2 = "resnet50v2"
 
 
 class Providers(Enum):
@@ -28,5 +26,6 @@ class Providers(Enum):
     gpu = "CUDAExecutionProvider"
 
 
-class Embeddings(BaseModel):
-    inferences: List[float]
+class ClusteringMode(Enum):
+    tsne = "tSNE"
+    umap = "UMAP"
