@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from loguru import logger
 
 from app.config import settings
-from app.routes import eda
+from app.routes import eda, embedding
 
 app = FastAPI(
     title="Basic API for Computer Vision EDA",
@@ -15,6 +15,7 @@ app = FastAPI(
 )
 
 app.include_router(eda.router, prefix="/eda")
+app.include_router(embedding.router, prefix="/embedding")
 
 
 app.add_middleware(

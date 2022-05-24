@@ -1,5 +1,7 @@
 from enum import Enum
+from typing import List
 
+import numpy as np
 from pydantic import BaseModel
 
 
@@ -24,3 +26,7 @@ class EmbeddingsModel(Enum):
 class Providers(Enum):
     cpu = "CPUExecutionProvider"
     gpu = "CUDAExecutionProvider"
+
+
+class Embeddings(BaseModel):
+    inferences: List[float]
