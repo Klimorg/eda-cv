@@ -88,6 +88,7 @@ async def get_histograms_channels(
 
     filename = Path(file.filename).stem
     image = load_image_into_numpy_array(await file.read())
+    logger.info(f"image loaded : {image.shape}")
 
     saved_image_path = compute_histograms_channels(
         image=image,

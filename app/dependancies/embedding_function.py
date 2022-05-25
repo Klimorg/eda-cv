@@ -123,7 +123,7 @@ class EmbeddingEngine:
         # create the new map
         cmap = cmap.from_list("Custom cmap", cmaplist, cmap.N)
 
-        plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(20, 20))
         scatter = plt.scatter(logits[:, 0], logits[:, 1], c=tags, cmap=cmap)
 
         if mode == ClusteringMode.tsne:

@@ -1,5 +1,6 @@
 # app/gunicorn.py
 # Gunicorn config file
+import multiprocessing
 import os
 
 #
@@ -68,10 +69,10 @@ bind = f"0.0.0.0:{port}"
 #       A positive integer. Generally set in the 1-5 seconds range.
 #
 
-# workers = multiprocessing.cpu_count() * 2 + 1
-workers = 2
+workers = multiprocessing.cpu_count() * 2 + 1
+# workers = 2
 # worker_connections = 1000
-timeout = 90
+timeout = 180
 # keepalive = 2
 
 #
