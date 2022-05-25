@@ -14,9 +14,21 @@ from app.pydantic_models import ClusteringMode, EmbeddingsModel, Providers
 
 
 class EmbeddingEngine:
+    """_summary_"""
+
     def __init__(
         self, model: EmbeddingsModel, provider: Providers, *args, **kwargs
     ) -> None:
+        """_summary_
+
+        Args:
+            model (EmbeddingsModel): _description_
+            provider (Providers): _description_
+
+        Raises:
+            NotImplementedError: _description_
+            NotImplementedError: _description_
+        """
         super().__init__(*args, **kwargs)
         if model == EmbeddingsModel.resnet50v2:
             self.model = settings.resnet50v2
@@ -31,7 +43,15 @@ class EmbeddingEngine:
 
         self.loaded_model = rt.InferenceSession(self.model, providers=self.provider)
 
-    def infer(self, images_paths):
+    def infer(self, images_paths) -> np.ndarray:
+        """_summary_
+
+        Args:
+            images_paths (_type_): _description_
+
+        Returns:
+            np.ndarray: _description_
+        """
 
         images_list = [Image.open(image).resize((224, 224)) for image in images_paths]
 
@@ -40,7 +60,6 @@ class EmbeddingEngine:
         images = np.reshape(images, (-1, 224, 224, 3))
 
         logits = self.loaded_model.run(["avg_pool"], {"input": images})
-
         return logits[0]
 
     def compute_clustering(
@@ -48,6 +67,15 @@ class EmbeddingEngine:
         logits: np.ndarray,
         mode: ClusteringMode,
     ) -> np.ndarray:
+        """_summary_
+
+        Args:
+            logits (np.ndarray): _description_
+            mode (ClusteringMode): _description_
+
+        Returns:
+            np.ndarray: _description_
+        """
 
         if mode == ClusteringMode.tsne:
             clusters = TSNE(
@@ -68,6 +96,17 @@ class EmbeddingEngine:
         timestamp: str,
         mode: ClusteringMode,
     ) -> Path:
+        """_summary_
+
+        Args:
+            logits (np.ndarray): _description_
+            images_paths (List[Path]): _description_
+            timestamp (str): _description_
+            mode (ClusteringMode): _description_
+
+        Returns:
+            Path: _description_
+        """
 
         images_labels = [Path(image_path).parent.stem for image_path in images_paths]
         labels_dict = {

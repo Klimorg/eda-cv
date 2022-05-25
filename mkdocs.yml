@@ -81,4 +81,6 @@ extra_javascript:
 
 nav:
   - Accueil: index.md
-  - Dependancies: dependancies.md
+  - EDA Dependancies: eda_functions.md
+  - Clustering: clustering.md
+  - Utils: utils.md

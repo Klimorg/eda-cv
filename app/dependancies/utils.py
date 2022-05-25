@@ -44,3 +44,9 @@ def load_image_into_numpy_array(data: bytes) -> np.ndarray:
         np.ndarray: The np.array associated to the image.
     """
     return np.array(Image.open(BytesIO(data)))
+
+
+def generate_batch(lst, batch_size):
+    """Yields batch of specified size"""
+    for i in range(0, len(lst), batch_size):
+        yield lst[i : i + batch_size]

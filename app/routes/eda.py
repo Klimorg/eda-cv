@@ -138,12 +138,10 @@ async def get_mean_std_scatterplot(extension: Extension):
         directory=settings.data_dir,
         extension=extension.value,
     )
-    # logger.info(f"{[Path(image_path).parent.stem for image_path in images_paths[:5]]}")
 
-    images_list = [
-        np.array(Image.open(image), dtype=np.float32) / 255 for image in images_paths
-    ]
-
-    saved_image_path = compute_scatterplot(images_list=images_list, timestamp=timestamp)
+    saved_image_path = compute_scatterplot(
+        images_paths=images_paths,
+        timestamp=timestamp,
+    )
 
     return FileResponse(saved_image_path)
