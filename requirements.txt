@@ -11,4 +11,4 @@ Pillow==9.1.1
 python-multipart==0.0.5
 scikit-learn==1.1.1
 umap-learn==0.5.3
-uvicorn[standard]==0.17.6
+uvicorn[standard]==0.18.1
